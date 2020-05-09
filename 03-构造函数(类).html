@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>小书书</title>
+        <meta name="keywords" content="关键词">
+        <meta name="description" content="描述">
+        <meta name="author" content="小书书">
+        <style>
+            body{font-family: "Microsoft YaHei",serif;user-select: none;}
+            body,dl,dd,p,h1,h2,h3,h4,h5,h6{margin:0;}
+            ol,ul,li{margin:0;padding:0;list-style:none;}
+            img{border:none;}
+        
+        </style>
+    </head>
+    <body>
+        <div id="wrap"></div>
+        
+        <script>
+            // function person(name,age,id){
+            //     var obj = {};
+            //     obj.name = name;
+            //     obj.age = age;
+            //     obj.id = id;
+            //     obj.showID = function(){
+            //         alert(this.id);
+            //     }
+            //     ;
+            //
+            //     return obj;
+            // }
+
+            // var  teacher = person("老师",18,1234);
+            // teacher.showID();
+            // console.log(teacher);
+
+            // 构造函数(首字母大写,与普通函数进行区分)/类
+            function Person(name,age,id){
+                this.name = name;
+                this.age = age;
+                this.id = id;
+                this.showID = function(){
+                    alert(this.id);
+                };
+            }
+
+            var  teacher = new Person("老师",18,1234);
+            console.log(teacher);
+        </script>
+    </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
