@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>小书书</title>
+        <meta name="keywords" content="关键词">
+        <meta name="description" content="描述">
+        <meta name="author" content="小书书">
+        <style>
+            body{font-family: "Microsoft YaHei",serif;user-select: none;}
+            body,dl,dd,p,h1,h2,h3,h4,h5,h6{margin:0;}
+            ol,ul,li{margin:0;padding:0;list-style:none;}
+            img{border:none;}
+        
+        </style>
+    </head>
+    <body>
+        <div id="wrap"></div>
+        
+        <script>
+            /*
+                当访问对象属性时,先从自身找,自身没有存在,再从原型里面找
+                原型链:当访问对象属性时:自身找-->原型找-->原型的原型找-->Object.prototype
+
+
+            */
+
+            function Fn(){
+                this.x = 10;
+            }
+            Fn.prototype.x = 20;
+            Fn.prototype.y= "Y";
+
+            var a = new Fn();
+
+            console.log(a.x);// 10
+            console.log(a.y);// Y
+
+
+        </script>
+    </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
