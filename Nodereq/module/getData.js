@@ -1,17 +1,17 @@
-var http = require('http');
+var https = require('https');
 var cheerio = require('cheerio') // 解析字符串为html
 
-var url = "http://sports.sina.com.cn/nba/1.shtml";
+var url = "https://www.zhibo8.cc";
 
 // 爬取页面
 function netGet(callback){
-    http.get(url, function(res){
+    https.get(url, function(res){
         var html = "";
         // 设置发送过来数据的格式
         res.setEncoding("utf-8");
         // 拿到数据时
-        res.on("data", function(chunk){
-            html += chunk;
+        res.on("data", function(data){
+            html += data;
         });
         // 请求结束时
         res.on("end", function(){
@@ -19,23 +19,13 @@ function netGet(callback){
             var dataArr = [];
 
             // 获取链接
-            $("#right a").each(function(){
-                dataArr.push({url:$(this).attr('href'), name:$(this).text()});
+            $("#recommend a").each(function(){
+                var url = $(this).attr('href');
+                var isHttps = /https/g.test(url);
+                dataArr.push({url:url, name:$(this).text(),isHttps:isHttps });
             })
-            callback(dataArr);
+            callback(dataArr)
         });
     })
 }
 module.exports = netGet
-
-
-
-
-
-
-
-
-
-
-
-
