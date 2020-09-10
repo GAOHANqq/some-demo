@@ -4,10 +4,15 @@ block content
   h2 抓取直播吧足球新闻数据
     a(href="https://www.zhibo8.cc") 直播吧
   button#createNewList 开始爬取数据
+  button#loadImg 加载图片
   p.hint(style="display:none") 正在获取数据中...
-  div.list-container
-    h2 数据列表
-    ul.list
+  div.list-container(style="display:flex;align-item: center;justify-content:center;width:100%;")
+    div.page-list(style="width:50%;")
+      h2 数据列表
+      ul.list
+    div.img-list(style="width:50%;")
+      h2 图片列表
+      ul.list
   script(src="/javascripts/jquery.js")
   script.
     $("#createNewList").click(function(){
@@ -17,9 +22,24 @@ block content
             if( data.code==1 ){
                 data.data.forEach(function(item){
                     var li = `<li><a href="${item.url}">${item.name}</a></li>`
-                    $(".list").append(li)
+                    $(".page-list .list").append(li)
                 });
                 $(".hint").hide();
+
+                $.get("/createImgs", function(res){
+                    console.log(res)
+                })
             }
         })
     });
+
+    $('#loadImg').click(function(){
+        $.get("/loadImg", function (data) {
+            if (data.code == 1) {
+                data.data.forEach(function (img) {
+                    var li = `<li><img src="${'images/'+img}"/></li>`;
+                    $(".img-list .list").append(li);
+                });
+            }
+        })
+    })

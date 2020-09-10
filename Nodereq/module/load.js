@@ -18,8 +18,7 @@ function load(callback){
                     res.on("end", function(){
                         var $ = cheerio.load(html);
                         var con = $("#signals").html();
-                        console.log(con);
-                        fs.writeFile(`./public/news/${index}.html`, con ,function(err){
+                        fs.writeFile(`./public/news/${index+1}.html`, con ,function(err){
                             if( err ){ throw err}
                             console.log(`新闻${index}写入成功`)
                         })

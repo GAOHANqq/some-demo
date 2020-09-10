@@ -19,11 +19,12 @@ function netGet(callback){
             var dataArr = [];
 
             // 获取链接
-            $("#recommend a").each(function(){
+            $(".r_news a").each(function(){
                 var url = $(this).attr('href');
                 var isHttps = /https/g.test(url);
                 dataArr.push({url:url, name:$(this).text(),isHttps:isHttps });
-            })
+            });
+
             callback(dataArr)
         });
     })
