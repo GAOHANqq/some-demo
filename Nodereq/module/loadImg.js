@@ -35,15 +35,3 @@ function loadImg(cb){
 
 module.exports = loadImg
 
-
-
-
-
-
-
-
-
-
-
-
-

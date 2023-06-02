@@ -6,12 +6,17 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "@alicloud/sms-sdk": "^1.1.6",
+    "art-template": "^4.13.2",
     "cheerio": "^1.0.0-rc.3",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
-    "pug": "2.0.0-beta11"
+    "node-schedule": "^1.2.5",
+    "nodemailer": "^4.4.0",
+    "pug": "2.0.0-beta11",
+    "socket.io": "^4.4.1"
   }
 }

@@ -4,7 +4,12 @@ block content
   h2 抓取直播吧足球新闻数据
     a(href="https://www.zhibo8.cc") 直播吧
   button#createNewList 开始爬取数据
+  br
   button#loadImg 加载图片
+  br
+  button#sendMsg 发送短信
+  br
+  button#sendEmail 发送邮件
   p.hint(style="display:none") 正在获取数据中...
   div.list-container(style="display:flex;align-item: center;justify-content:center;width:100%;")
     div.page-list(style="width:50%;")
@@ -42,4 +47,18 @@ block content
                 });
             }
         })
+    })
+
+
+    $('#sendMsg').click(function () {
+       $.get("/sendMsg", function (data) {
+            if (data.Code == "OK") {
+            }
+        })
+    })
+
+    $('#sendEmail').click(function () {
+        var hour  = new Date().getHours()
+        var min  = new Date().getMinutes()+1
+        $.get("/sendEmail",{hour,min});
     })

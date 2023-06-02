@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>小书书</title>
+        <meta name="keywords" content="关键词">
+        <meta name="description" content="描述">
+        <meta name="author" content="小书书">
+        <style>
+            body{font-family: "Microsoft YaHei",serif;user-select: none;}
+            body,dl,dd,p,h1,h2,h3,h4,h5,h6{margin:0;}
+            ol,ul,li{margin:0;padding:0;list-style:none;}
+            img{border:none;}
+        </style>
+    </head>
+    <body>
+        <div id="wrap">
+            <h2>{{tip}}</h2>
+            <h3>今天是:{{today}}</h3>
+            <ul>
+                {{each data}}
+                <li>
+                    <span>时间:{{$value.day}}</span>
+                    <span>温度:<img src="{{$value.imgUrl}}"/>{{$value.temperature}}</span>
+                    <span>风向:{{$value.windDir}}</span>
+                    <span>风速:{{$value.windLevel}}</span>
+                </li>
+                {{/each}}
+            </ul>
+            <h2><a href="https://blog.xjjswh.cn/">关于我</a></h2>
+        </div>
+    </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

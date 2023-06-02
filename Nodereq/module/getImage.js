@@ -65,7 +65,6 @@ function getImg(imgObj){
     }
 }
 
-
 function downImg(name, data) {
     fs.writeFile("./public/images/" + name, data, "binary", function(err){
         if(err){
@@ -76,16 +75,4 @@ function downImg(name, data) {
 }
 
 module.exports = createImgs
-
-
-
-
-
-
-
-
-
-
-
-
 
