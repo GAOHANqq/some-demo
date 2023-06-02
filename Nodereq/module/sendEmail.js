@@ -9,8 +9,8 @@ const template = require('art-template');
 
 //发送者邮箱SMTP账户
 let emailAuth = {
-    user: "1271448267@qq.com",
-    pass: "scvsvqgtgglegjjh" // 授权码,不是密码
+    user: "1271448267@qq.com", //账号
+    pass: "" // 授权码,不是密码
 };
 let emailInfo={
     service: 'qq',
