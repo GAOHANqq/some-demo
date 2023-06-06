@@ -133,6 +133,20 @@
         channel.open('test').postMessage('test',111)
         channel.open('test2').postMessage('test2',222)
         console.log(channel);
+
+
+
+        // Object.prototype[Symbol.iterator] = function () {
+        //     const values = Object.values(this)
+        //     function* increment() {
+        //         let curr = 0;
+        //         while (curr < values.length) {
+        //             yield values[curr++];
+        //         }
+        //     }
+        //     return increment()
+        // };
+        const [a,b] = {a:1,b:2}
     </script>
 </body>
 </html>
