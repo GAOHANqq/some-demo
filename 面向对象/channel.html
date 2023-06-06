@@ -1,0 +1,152 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Title</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="keywords" content="关键词">
+    <meta name="description" content="描述">
+    <meta name="author" content="小书书">
+    <style>
+        body {
+            font-family: "Microsoft YaHei", serif;
+        }
+
+        body, dl, dd, p, h1, h2, h3, h4, h5, h6 {
+            margin: 0;
+        }
+
+        ol, ul, li {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        img {
+            border: none;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="wrap"></div>
+
+    <script>
+        function BroadChannel(name,cb){
+            // 获取频道
+            this.get = function(channelname){
+                return this.channelMap.get(channelname)
+            }
+            // 获取默认频道名称
+            this.getDefaultName  = function(){
+                return 'broad-channel-' + (this.channelMap.size + 1)
+            }
+            // 获取所有频道数
+            this.getLength  = function(){
+                return this.channelMap.size
+            }
+            // 创建频道
+            this.create = function(channelname){
+                const self = this
+                const name = channelname || self.getDefaultName()
+                const channel = new BroadcastChannel(name)
+                channel.onmessage = function(ev){
+                    const message = {
+                        data: ev.data,
+                        name,
+                        time: Date.now()
+                    }
+                    self.onMessage(message)
+                }
+                channel.onmessageerror = function(ev){
+                    const message = {
+                        data: ev.data,
+                        name,
+                        time: Date.now()
+                    }
+                    self.onMessageError(message)
+                }
+                self.channelMap.set(name,channel)
+                self.channelLength = self.getLength()
+                return channel
+            }
+            // 开通频道
+            this.open = function (channelname){
+                const channel = this.get(channelname)
+                return channel || this.create(channelname)
+            }
+            // 关闭频道
+            this.close = function(channelname){
+                const channel = this.get(channelname)
+                if( channel ){
+                    channel.close()
+                }
+            }
+            // 删除频道
+            this.delete = function(channelname){
+                this.close(channelname)
+                this.channelMap.delete(channelname)
+                this.channelLength = this.getLength()
+            }
+            // 判断是否存在相同频道
+            this.has = function(channelname){
+                return this.channelMap.has(channelname)
+            }
+            // 发送消息
+            this.postMessage = function(channelname, data){
+                const channel = this.get(channelname)
+                if( channel ){
+                    try {
+                        // 正常
+                        channel.postMessage(data)
+                    }catch (e) {
+                        // 频道已关闭,重新创建频道
+                        this.delete(channelname)
+                        this.open(channelname)
+                        this.postMessage(channelname, data)
+                    }
+                }else{
+                    console.warn('【channel:'+channelname+'】: channel is not defined, you should first execute open method');
+                }
+            }
+            // 接收消息
+            this.onMessage = function(data){
+                cb && cb(data)
+            }
+            // 错误监听
+            this.onMessageError = function (data){
+                console.error( '【'+data.name+'】频道:' +data);
+            }
+            // 初始化
+            this.reset = function (){
+                // 频道名称集合
+                this.channelMap = new Map()
+                this.channelLength = this.getLength()
+            }
+            this.reset(name)
+        }
+        const channel = new BroadChannel((data)=>{
+            console.log(data);
+
+        })
+        channel.open('test').postMessage('test',111)
+        channel.open('test2').postMessage('test2',222)
+        console.log(channel);
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
