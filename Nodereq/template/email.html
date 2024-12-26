@@ -33,6 +33,204 @@
 </html>
 
 
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1000, initial-scale=1.0" />
+    <title>Vue3-CDN</title>
+    <link rel="stylesheet" href="/vue/index.css" />
+    <script src="/vue/vue.global.js"></script>
+    <script src="/vue/index.full.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <div class="container">
+        <h2 v-text="message"></h2>
+        <el-button type="primary" @click="onClick">点击</el-button>
+        <my-number :number="number" @on-click="onEmit"></my-number>
+        <el-button type="primary" @click="onSave">已选菜单整理</el-button>
+        <el-collapse v-model="activeMenu">
+          <el-collapse-item
+            :title="item.name"
+            :name="item.path"
+            v-for="item in menuList"
+            :key="item.path"
+            :class="{children: item?.children?.length}"
+            :disabled="item?.children?.length===0"
+          >
+            <template #title>
+              <span>
+                <el-checkbox
+                  v-model="item.checked"
+                  :label="item.name"
+                  :indeterminate="item.indeterminate"
+                  :disabled="item.path==='/home'"
+                  @click.stop
+                  @change="onChangeFirst($event,item)"
+                />
+              </span>
+            </template>
+
+            <el-checkbox-group
+              v-model="item.checkedList"
+              v-if="item.children"
+              style="margin-left: 30px"
+              @change="onChangeSecond($event, item)"
+            >
+              <el-checkbox :label="sitem.name" :value="sitem.path" v-for="sitem in item.children" :key="sitem.path" />
+            </el-checkbox-group>
+          </el-collapse-item>
+        </el-collapse>
+      </div>
+    </div>
+
+    <script>
+      const { createApp, ref, toRefs, reactive, onMounted, watchEffect } = Vue
+      const { ElMessage, ElCollapse, ElCheckboxGroup } = ElementPlus
+
+      const MyNumber = {
+        template: '<span v-text="text" @click="onClickNumber"></span>',
+        emits: ['on-click'],
+        props: {
+          number: {
+            type: Number,
+            default: 0
+          }
+        },
+        setup(props, ctx) {
+          const state = reactive({
+            text: ''
+          })
+
+          const animate = () => {
+            let number = 0
+            const start = performance.now()
+            const duration = 500
+
+            const run = (time) => {
+              const elapsed = time - start
+              const progress = Math.min(elapsed / duration, 1)
+              const num = Math.floor(progress * props.number)
+              if (progress < 1) {
+                requestAnimationFrame(() => {
+                  run(performance.now())
+                })
+              }
+              state.text = format(num)
+            }
+
+            const format = (number) => {
+              number = number + ''
+              return number.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+            }
+            run(start)
+          }
+
+          const onClickNumber = () => {
+            ctx.emit('on-click', state.text)
+          }
+
+          watchEffect(() => {
+            animate()
+          })
+
+          return {
+            ...toRefs(state),
+            onClickNumber
+          }
+        }
+      }
+
+      const app = createApp({
+        components: { MyNumber, ElCollapse, ElCheckboxGroup },
+        setup() {
+          const state = reactive({
+            message: 'Hello World!',
+            number: 0,
+
+            activeMenu: '',
+            menuList: [
+              { name: '首页', path: '/home', checked: true, indeterminate: false, checkedList: [] },
+              {
+                name: '商品管理',
+                path: '/product',
+                checked: false,
+                indeterminate: false,
+                checkedList: [],
+                children: [{ name: '商品列表', path: '/product/list', checked: false, checkedList: [] }]
+              },
+              {
+                name: '订单管理',
+                path: '/order',
+                checked: false,
+                indeterminate: false,
+                checkedList: [],
+                children: [
+                  { name: '订单列表', path: '/order/list', checked: false, checkedList: [] },
+                  { name: '退款列表', path: '/order/money', checked: false, checkedList: [] }
+                ]
+              }
+            ]
+          })
+
+          const onClick = () => {
+            ElMessage.warning('test')
+          }
+
+          const onEmit = (text) => {
+            ElMessage.info(`子组件传递事件: ${text}`)
+          }
+
+          const onChangeFirst = (checked, item) => {
+            item.checkedList = []
+            item.indeterminate = false
+            item?.children.forEach((sitem) => {
+              sitem.checked = checked
+              if (checked) {
+                item.checkedList = [...item.checkedList, sitem.path]
+              }
+            })
+          }
+          const onChangeSecond = (checkedList, item) => {
+            item.children.forEach((sitem) => {
+              sitem.checked = checkedList.includes(sitem.path)
+            })
+            item.checked = checkedList.length === item.children.length
+            item.indeterminate = checkedList.length > 0 && checkedList.length < item.children.length
+          }
+
+          const onSave = () => {
+            const data = JSON.parse(JSON.stringify(state.menuList))
+            const res = data.filter((item) => {
+              if (item?.children?.length) {
+                item.children = item.children.filter((sitem) => sitem.checked)
+              }
+              return item.checked || item.indeterminate
+            })
+            console.log(res)
+          }
+
+          onMounted(() => {
+            setTimeout(() => {
+              state.number = 92561
+            }, 30)
+          })
+          return {
+            ...toRefs(state),
+            onClick,
+            onEmit,
+            onSave,
+            onChangeFirst,
+            onChangeSecond
+          }
+        }
+      })
+      app.use(ElementPlus)
+      app.mount('#app')
+    </script>
+  </body>
+</html>
 
 
 
