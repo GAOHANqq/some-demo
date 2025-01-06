@@ -210,6 +210,100 @@
             })
             console.log(res)
           }
+ /**
+           * 图片转base64
+           * @param {string} 图片地址
+           * @returns
+           */
+          const imageUrlToBase64 = (imageUrl) => {
+            return new Promise((resolve, reject) => {
+              let image = new Image()
+              image.setAttribute('crossOrigin', 'Anonymous')
+              image.src = imageUrl
+              image.onload = function () {
+                const canvas = document.createElement('canvas')
+                canvas.width = image.width
+                canvas.height = image.height
+                const context = canvas.getContext('2d')
+                context.drawImage(image, 0, 0, image.width, image.height)
+                const base64Str = canvas.toDataURL('image/png')
+                resolve(base64Str)
+              }
+              image.onerror = function (e) {
+                reject(e)
+              }
+            })
+          }
+
+          /**
+           * 转换base64
+           * @param {string} base64
+           * @returns
+           */
+          function parseBase64(base64) {
+            let re = new RegExp('data:(?<type>.*?);base64,(?<data>.*)')
+            let res = re.exec(base64)
+            if (res) {
+              return {
+                type: res.groups.type,
+                ext: res.groups.type.split('/').slice(-1)[0],
+                data: res.groups.data
+              }
+            }
+          }
+
+          /**
+           * 复制文字
+           * @param {string} text  要复制的文本
+           * @returns {boolean} true/false
+           */
+          const copyText = async (text) => {
+            if (navigator && navigator.clipboard) {
+              const result = await navigator.clipboard.writeText(text)
+              console.log(result)
+              return true
+            }
+            // 动态创建 textarea 标签
+            const textarea = document.createElement('textarea')
+            // 将该 textarea 设为 readonly 防止 iOS 下自动唤起键盘，同时将 textarea 移出可视区域
+            textarea.readOnly = 'readonly'
+            textarea.style.position = 'absolute'
+            textarea.style.left = '-9999px'
+            textarea.style.opacity = '0'
+            // 将要 copy 的值赋给 textarea 标签的 value 属性
+            textarea.value = text
+            // 将 textarea 插入到 body 中
+            document.body.appendChild(textarea)
+            // 选中值并复制
+            textarea.select()
+            const result = document.execCommand('Copy')
+            document.body.removeChild(textarea)
+            console.log(result)
+            return result
+          }
+
+          /**
+           * 复制图片
+           * @param {string} imageUrl 图片地址
+           * @param {boolean} isBase64 是否是base64
+           */
+          const copyImage = async (imageUrl, isBase64 = false) => {
+            let base64Url = ''
+            if (!isBase64) {
+              base64Url = await imageUrlToBase64(imageUrl)
+            } else base64Url = imageUrl
+            const parsedBase64 = parseBase64(base64Url)
+            let type = parsedBase64.type
+            //将base64转为Blob类型
+            let bytes = atob(parsedBase64.data)
+            let ab = new ArrayBuffer(bytes.length)
+            let ua = new Uint8Array(ab)
+            for (let i = 0; i < bytes.length; i++) {
+              ua[i] = bytes.charCodeAt(i)
+            }
+            let blob = new Blob([ab], { type })
+            navigator.clipboard.write([new ClipboardItem({ [type]: blob })])
+          }
 
           onMounted(() => {
             setTimeout(() => {
